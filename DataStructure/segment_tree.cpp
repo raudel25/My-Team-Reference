@@ -5,7 +5,8 @@
 
 using namespace std;
 
-class SegmentTree {
+class SegmentTree
+{
 private:
     vector<int> _st, _a;
     vector<long long> _sum;
@@ -15,11 +16,15 @@ private:
 
     int right(int p) { return (p << 1) + 1; }
 
-    void build(int p, int l, int r) {
-        if (l == r) {
+    void build(int p, int l, int r)
+    {
+        if (l == r)
+        {
             _st[p] = l;
             _sum[p] = _a[l];
-        } else {
+        }
+        else
+        {
             build(left(p), l, (l + r) / 2);
             build(right(p), (l + r) / 2 + 1, r);
 
@@ -31,13 +36,19 @@ private:
         }
     }
 
-    void set(int p, int l, int r, int i, int v) {
-        if (l == r) {
+    void set(int p, int l, int r, int i, int v)
+    {
+        if (l == r)
+        {
             _sum[p] = v;
             _a[l] = v;
-        } else {
-            if (i <= (l + r) / 2) set(left(p), l, (l + r) / 2, i, v);
-            else set(right(p), (l + r) / 2 + 1, r, i, v);
+        }
+        else
+        {
+            if (i <= (l + r) / 2)
+                set(left(p), l, (l + r) / 2, i, v);
+            else
+                set(right(p), (l + r) / 2 + 1, r, i, v);
 
             int p1 = _st[left(p)];
             int p2 = _st[right(p)];
@@ -47,9 +58,12 @@ private:
         }
     }
 
-    long long sum(int p, int l, int r, int i, int j) {
-        if (i > r || j < l) return 0;
-        if (i <= l && r <= j) return _sum[p];
+    long long sum(int p, int l, int r, int i, int j)
+    {
+        if (i > r || j < l)
+            return 0;
+        if (i <= l && r <= j)
+            return _sum[p];
 
         long long p1 = sum(left(p), l, (l + r) / 2, i, j);
         long long p2 = sum(right(p), (l + r) / 2 + 1, r, i, j);
@@ -57,21 +71,27 @@ private:
         return p1 + p2;
     }
 
-    int rmq(int p, int l, int r, int i, int j) {
-        if (i > r || j < l) return -1;
-        if (i <= l && r <= j) return _st[p];
+    int rmq(int p, int l, int r, int i, int j)
+    {
+        if (i > r || j < l)
+            return -1;
+        if (i <= l && r <= j)
+            return _st[p];
 
         int p1 = rmq(left(p), l, (l + r) / 2, i, j);
         int p2 = rmq(right(p), (l + r) / 2 + 1, r, i, j);
 
-        if (p1 == -1) return p2;
-        if (p2 == -1) return p1;
+        if (p1 == -1)
+            return p2;
+        if (p2 == -1)
+            return p1;
 
         return (_a[p1] <= _a[p2]) ? p1 : p2;
     }
 
 public:
-    SegmentTree(vector<int> &a) {
+    SegmentTree(vector<int> &a)
+    {
         _a = a;
         n = a.size();
         _st.assign(4 * n, 0);
@@ -88,10 +108,10 @@ public:
     int get(int i) { return _a[i]; }
 };
 
-int main() {
+int main()
+{
     ios_base::sync_with_stdio();
     cin.tie();
-
 
     return 0;
 }
