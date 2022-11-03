@@ -33,10 +33,11 @@ private:
     int left(int i) { return 2 * i + 1; }
     int right(int i) { return 2 * i + 2; }
     int father(int i) { return (i - 1) / 2; }
+    bool is_leaft(int i) { return i >= _size / 2; }
 
-    void heapify_top_min(int i)
+    void heapify_down_min(int i)
     {
-        if (i >= _size / 2)
+        if (is_leaft(i))
             return;
         if (p[i].get_valor() > p[left(i)].get_valor() || p[i].get_valor() > p[right(i)].get_valor())
         {
@@ -46,13 +47,13 @@ private:
             p[i] = p[item];
             p[item] = aux;
 
-            heapify_top_min(item);
+            heapify_down_min(item);
         }
     }
 
-    void heapify_top_max(int i)
+    void heapify_down_max(int i)
     {
-        if (i >= _size / 2)
+        if (is_leaft(i))
             return;
         if (p[i].get_valor() < p[left(i)].get_valor() || p[i].get_valor() < p[right(i)].get_valor())
         {
@@ -62,11 +63,11 @@ private:
             p[i] = p[item];
             p[item] = aux;
 
-            heapify_top_max(item);
+            heapify_down_max(item);
         }
     }
 
-    void heapify_bottom_min(int i)
+    void heapify_up_min(int i)
     {
         if (i == 0)
             return;
@@ -76,11 +77,11 @@ private:
             p[i] = p[father(i)];
             p[father(i)] = aux;
 
-            heapify_bottom_min(father(i));
+            heapify_up_min(father(i));
         }
     }
 
-    void heapify_bottom_max(int i)
+    void heapify_up_max(int i)
     {
         if (i == 0)
             return;
@@ -90,7 +91,44 @@ private:
             p[i] = p[father(i)];
             p[father(i)] = aux;
 
-            heapify_bottom_min(father(i));
+            heapify_up_max(father(i));
+        }
+    }
+
+    bool is_heap_min(int i)
+    {
+        if (is_leaft(i))
+            return true;
+
+        return p[left(i)].get_valor() >= p[i].get_valor() && p[right(i)].get_valor() >= p[i].get_valor();
+    }
+
+    bool is_heap_max(int i)
+    {
+        if (is_leaft(i))
+            return true;
+
+        return p[left(i)].get_valor() <= p[i].get_valor() && p[right(i)].get_valor() <= p[i].get_valor();
+    }
+
+    void build_heap_min()
+    {
+        for (int i = size() - 1; i >= 0; i++)
+        {
+            if (!is_heap_min(i))
+                heapify_down_min(i);
+        }
+    }
+
+    void build_heap_max()
+    {
+
+        for (int i = size() - 1; i >= 0; i--)
+        {
+            if (!is_heap_max(i))
+            {
+                heapify_down_max(i);
+            }
         }
     }
 
@@ -100,15 +138,24 @@ public:
         _size = 0;
     }
 
+    Heap(vector<node> &v)
+    {
+        p = v;
+        _size = p.size();
+
+        build_heap_max();
+    }
+
     void push(node n)
     {
         if (_size == p.size())
             p.push_back(n);
         else
-            p[_size - 1] = n;
+            p[_size] = n;
 
-        heapify_bottom_max(p.size() - 1);
         _size++;
+
+        heapify_up_max(_size - 1);
     }
 
     node top()
@@ -120,9 +167,9 @@ public:
     {
         p[0] = p[_size - 1];
 
-        heapify_top_max(0);
-
         _size--;
+
+        heapify_down_max(0);
     }
 
     int size()
@@ -135,23 +182,6 @@ int main()
 {
     ios_base::sync_with_stdio();
     cin.tie();
-
-    Heap a = Heap();
-
-    node n1 = node(3);
-    node n2 = node(4);
-
-    a.push(n1);
-    a.push(n2);
-
-    a.pop();
-
-    a.push(node(6));
-    a.push(node(5));
-    a.pop();
-
-    cout << a.top().get_valor() << "\n";
-    cout << a.size() << "\n";
 
     return 0;
 }
