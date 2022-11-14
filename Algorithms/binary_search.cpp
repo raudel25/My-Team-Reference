@@ -5,33 +5,38 @@
 
 using namespace std;
 
-int binary_search(vector<int> &a, int x) {
+int binary_search(vector<int> &a, int x)
+{
     int init = 0;
-    int end = (int) a.size() - 1;
+    int end = (int)a.size() - 1;
     int middle;
 
-    while (end - init >= 2) {
+    while (end - init >= 2)
+    {
 
         middle = (init + end) / 2;
 
-        if (x == a[middle]) return middle;
+        if (x == a[middle])
+            return middle;
 
-        if (a[middle] < x) init = middle;
-        if (a[middle] > x) end = middle;
-
+        if (a[middle] < x)
+            init = middle;
+        if (a[middle] > x)
+            end = middle;
     }
 
-    if (a[init] == x) return init;
-    if (a[end] == x) return end;
+    if (a[init] == x)
+        return init;
+    if (a[end] == x)
+        return end;
 
     return -1;
 }
 
-int main() {
-    ios_base::sync_with_stdio();
-    cin.tie();
-
-
+int main()
+{
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);
 
     return 0;
 }

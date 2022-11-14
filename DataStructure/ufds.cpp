@@ -5,23 +5,27 @@
 
 using namespace std;
 
-class ufds {
+class ufds
+{
 private:
     vector<int> p, rank, sizeSet;
     int disjoinSet;
 
 public:
-    ufds(int n) {
+    ufds(int n)
+    {
         p.assign(n, 0);
         rank.assign(n, 0);
         sizeSet.assign(n, 1);
         disjoinSet = n;
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < n; i++)
+        {
             p[i] = i;
         }
     }
 
-    int find(int n) {
+    int find(int n)
+    {
         if (n == p[n])
             return n;
         p[n] = find(p[n]);
@@ -30,15 +34,20 @@ public:
 
     bool isSameSet(int i, int j) { return find(i) == find(j); }
 
-    void unionSet(int i, int j) {
-        if (!isSameSet(i, j)) {
+    void unionSet(int i, int j)
+    {
+        if (!isSameSet(i, j))
+        {
             disjoinSet--;
             int x = find(i);
             int y = find(j);
-            if (rank[x] > rank[y]) {
+            if (rank[x] > rank[y])
+            {
                 p[y] = x;
                 sizeSet[x] += sizeSet[y];
-            } else {
+            }
+            else
+            {
                 p[x] = y;
                 sizeSet[y] += sizeSet[x];
                 if (rank[x] == rank[y])
@@ -52,11 +61,10 @@ public:
     int sizeofSet(int i) { return sizeSet[find(i)]; }
 };
 
-
-int main() {
-    ios_base::sync_with_stdio();
-    cin.tie();
-
+int main()
+{
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);
 
     return 0;
 }
