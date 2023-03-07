@@ -18,7 +18,7 @@ vi prefix_function(string p)
     for (int i = 1; i < p.size(); i++)
     {
         while (k > 0 && p[k] != p[i])
-            k = pf[k];
+            k = pf[k-1];
 
         if (p[k] == p[i])
             k++;
@@ -38,13 +38,15 @@ vi kmp(string t, string p)
     for (int i = 0; i < t.size(); i++)
     {
         while (k > 0 && p[k] != t[i])
-            k = pf[k];
+            k = pf[k-1];
 
         if (p[k] == t[i])
             k++;
 
-        if (k == p.size())
+        if (k == p.size()){
             result.push_back(i);
+            k = pf[k - 1];
+        }
     }
 
     return result;

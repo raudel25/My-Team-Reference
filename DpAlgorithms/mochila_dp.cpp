@@ -18,7 +18,7 @@ int val(int id, int m, int n)
     if (memo[id][m] != -1)
         return memo[id][m];
     if (m < w[id])
-        return memo[id][m] = 0;
+        return memo[id][m] = val(id + 1, m, n);
 
     return memo[id][m] = max(val(id + 1, m - w[id], n) + v[id], val(id + 1, m, n));
 }
