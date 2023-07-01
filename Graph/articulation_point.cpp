@@ -13,7 +13,7 @@ vector<int> t;
 vector<int> low;
 vector<bool> art;
 
-void dfs(vector<int> adj[], int n, int p, int q)
+void dfs_art(vector<int> adj[], int n, int p, int q)
 {
     t[n] = q;
     low[n] = q++;
@@ -25,7 +25,7 @@ void dfs(vector<int> adj[], int n, int p, int q)
     {
         if (!visited[adj[n][i]])
         {
-            dfs(adj, adj[n][i], n, q);
+            dfs_art(adj, adj[n][i], n, q);
             low[n] = min(low[adj[n][i]], low[n]);
             j++;
 
@@ -57,7 +57,7 @@ vector<int> articulationPoints(int V, vector<int> adj[])
     {
         if (!visited[i])
         {
-            dfs(adj, i, -1, 1);
+            dfs_art(adj, i, -1, 1);
         }
     }
 

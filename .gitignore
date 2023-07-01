@@ -458,3 +458,6 @@ $RECYCLE.BIN/
 #
 cmake-build-debug/*
 CMakeLists.txt
+
+parse/in.txt
+parse/out.json

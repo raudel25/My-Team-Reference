@@ -13,7 +13,7 @@ vector<int> t;
 vector<int> low;
 set<pair<int, int>> bridges;
 
-void dfs(vector<int> adj[], int n, int p, int q)
+void dfs_bridges(vector<int> adj[], int n, int p, int q)
 {
     t[n] = q;
     low[n] = q++;
@@ -25,7 +25,7 @@ void dfs(vector<int> adj[], int n, int p, int q)
     {
         if (!visited[adj[n][i]])
         {
-            dfs(adj, adj[n][i], n, q);
+            dfs_bridges(adj, adj[n][i], n, q);
             low[n] = min(low[adj[n][i]], low[n]);
             j++;
         }
@@ -52,7 +52,7 @@ set<pair<int, int>> bridge_edges(int V, vector<int> adj[])
     {
         if (!visited[i])
         {
-            dfs(adj, i, -1, 1);
+            dfs_bridges(adj, i, -1, 1);
         }
     }
 
