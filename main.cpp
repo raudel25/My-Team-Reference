@@ -5,11 +5,12 @@
 #define ll long long
 #define vi vector<int>
 #define vll vector<long long>
+#define pii pair<int, int>
 
 using namespace std;
 
-void solve(){
-
+void solve()
+{
 }
 
 int main()

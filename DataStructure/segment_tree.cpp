@@ -8,25 +8,10 @@
 
 using namespace std;
 
-struct node
-{
-
-private:
-    int _valor;
-
-public:
-    node(int n)
-    {
-        _valor = n;
-    }
-
-    int get_valor() { return _valor; }
-};
-
 class SegmentTree
 {
 private:
-    vector<node> _a;
+    vi _a;
     vector<int> _st;
     vector<long long> _sum;
     int n;
@@ -40,7 +25,7 @@ private:
         if (l == r)
         {
             _st[p] = l;
-            _sum[p] = _a[l].get_valor();
+            _sum[p] = _a[l];
         }
         else
         {
@@ -50,16 +35,16 @@ private:
             int p1 = _st[left(p)];
             int p2 = _st[right(p)];
 
-            _st[p] = (_a[p1].get_valor() <= _a[p2].get_valor()) ? p1 : p2;
+            _st[p] = (_a[p1] <= _a[p2]) ? p1 : p2;
             _sum[p] = _sum[left(p)] + _sum[right(p)];
         }
     }
 
-    void set(int p, int l, int r, int i, node v)
+    void set(int p, int l, int r, int i, int v)
     {
         if (l == r)
         {
-            _sum[p] = v.get_valor();
+            _sum[p] = v;
             _a[l] = v;
         }
         else
@@ -72,7 +57,7 @@ private:
             int p1 = _st[left(p)];
             int p2 = _st[right(p)];
 
-            _st[p] = (_a[p1].get_valor() <= _a[p2].get_valor()) ? p1 : p2;
+            _st[p] = (_a[p1] <= _a[p2]) ? p1 : p2;
             _sum[p] = _sum[left(p)] + _sum[right(p)];
         }
     }
@@ -105,11 +90,11 @@ private:
         if (p2 == -1)
             return p1;
 
-        return (_a[p1].get_valor() <= _a[p2].get_valor()) ? p1 : p2;
+        return (_a[p1] <= _a[p2]) ? p1 : p2;
     }
 
 public:
-    SegmentTree(vector<node> &a)
+    SegmentTree(vi &a)
     {
         _a = a;
         n = a.size();
@@ -122,9 +107,9 @@ public:
 
     long long sum(int i, int j) { return sum(1, 0, n - 1, i, j); }
 
-    void set(int i, node v) { set(1, 0, n - 1, i, v); }
+    void set(int i, int v) { set(1, 0, n - 1, i, v); }
 
-    node get(int i) { return _a[i]; }
+    int get(int i) { return _a[i]; }
 };
 
 int main()

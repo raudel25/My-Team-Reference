@@ -8,26 +8,11 @@
 
 using namespace std;
 
-struct node
-{
-
-private:
-    int _valor;
-
-public:
-    node(int n)
-    {
-        _valor = n;
-    }
-
-    int get_valor() { return _valor; }
-};
-
 class Heap
 {
 
 private:
-    vector<node> p;
+    vi p;
     int _size;
 
     int left(int i) { return 2 * i + 1; }
@@ -39,11 +24,11 @@ private:
     {
         if (is_leaft(i))
             return;
-        if (p[i].get_valor() > p[left(i)].get_valor() || p[i].get_valor() > p[right(i)].get_valor())
+        if (p[i] > p[left(i)] || p[i] > p[right(i)])
         {
-            int item = p[left(i)].get_valor() > p[right(i)].get_valor() ? right(i) : left(i);
+            int item = p[left(i)] > p[right(i)] ? right(i) : left(i);
 
-            node aux = p[i];
+            int aux = p[i];
             p[i] = p[item];
             p[item] = aux;
 
@@ -55,11 +40,11 @@ private:
     {
         if (is_leaft(i))
             return;
-        if (p[i].get_valor() < p[left(i)].get_valor() || p[i].get_valor() < p[right(i)].get_valor())
+        if (p[i] < p[left(i)] || p[i] < p[right(i)])
         {
-            int item = p[left(i)].get_valor() < p[right(i)].get_valor() ? right(i) : left(i);
+            int item = p[left(i)] < p[right(i)] ? right(i) : left(i);
 
-            node aux = p[i];
+            int aux = p[i];
             p[i] = p[item];
             p[item] = aux;
 
@@ -71,9 +56,9 @@ private:
     {
         if (i == 0)
             return;
-        if (p[i].get_valor() < p[father(i)].get_valor())
+        if (p[i] < p[father(i)])
         {
-            node aux = p[i];
+            int aux = p[i];
             p[i] = p[father(i)];
             p[father(i)] = aux;
 
@@ -85,9 +70,9 @@ private:
     {
         if (i == 0)
             return;
-        if (p[i].get_valor() > p[father(i)].get_valor())
+        if (p[i] > p[father(i)])
         {
-            node aux = p[i];
+            int aux = p[i];
             p[i] = p[father(i)];
             p[father(i)] = aux;
 
@@ -100,7 +85,7 @@ private:
         if (is_leaft(i))
             return true;
 
-        return p[left(i)].get_valor() >= p[i].get_valor() && p[right(i)].get_valor() >= p[i].get_valor();
+        return p[left(i)] >= p[i] && p[right(i)] >= p[i];
     }
 
     bool is_heap_max(int i)
@@ -108,7 +93,7 @@ private:
         if (is_leaft(i))
             return true;
 
-        return p[left(i)].get_valor() <= p[i].get_valor() && p[right(i)].get_valor() <= p[i].get_valor();
+        return p[left(i)] <= p[i] && p[right(i)] <= p[i];
     }
 
     void build_heap_min()
@@ -138,7 +123,7 @@ public:
         _size = 0;
     }
 
-    Heap(vector<node> &v)
+    Heap(vi &v)
     {
         p = v;
         _size = p.size();
@@ -146,7 +131,7 @@ public:
         build_heap_max();
     }
 
-    void push(node n)
+    void push(int n)
     {
         if (_size == p.size())
             p.push_back(n);
@@ -158,7 +143,7 @@ public:
         heapify_up_max(_size - 1);
     }
 
-    node top()
+    int top()
     {
         return p[0];
     }
