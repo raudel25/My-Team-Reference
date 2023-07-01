@@ -6,6 +6,7 @@
 #define vi vector<int>
 #define vll vector<long long>
 #define pii pair<int, int>
+#define vii vector<pii>
 
 using namespace std;
 
