@@ -6,9 +6,9 @@
 #define vi vector<int>
 #define vll vector<long long>
 
-#define alphabet 26
-
 using namespace std;
+
+#define alphabet 26
 
 class Trie
 {
