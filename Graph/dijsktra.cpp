@@ -66,20 +66,18 @@ vector<int> dijkstra2(int V, vector<vector<int>> adj[], int S)
     priority_queue<pair<int, int>> q;
     q.push({d[S], S});
 
-    mask.assign(V, false);
-
+    
     for (int i = 0; i < V; i++)
     {
         int act = -1;
-        int m = infinite;
-
+        
         while (act == -1)
         {
             int top = q.top().second;
             int m = abs(q.top().first);
             q.pop();
 
-            if (!mask[top])
+            if (m <= d[top])
                 act = top;
         }
 
@@ -92,7 +90,6 @@ vector<int> dijkstra2(int V, vector<vector<int>> adj[], int S)
             }
         }
 
-        mask[act] = true;
     }
 
     return d;
