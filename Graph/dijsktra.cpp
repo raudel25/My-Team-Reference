@@ -54,42 +54,33 @@ vector<int> dijkstra1(int V, vector<vector<int>> adj[], int S)
 }
 
 // O((V+E)log(E))
-vector<int> dijkstra2(int V, vector<vector<int>> adj[], int S)
+vi dijkstra2(int V, vii adj[], int S)
 {
     vector<int> d;
 
     d.assign(V, infinite);
     d[S] = 0;
 
-    vector<bool> mask;
-
     priority_queue<pair<int, int>> q;
     q.push({d[S], S});
 
-    
-    for (int i = 0; i < V; i++)
+    while (!q.empty())
     {
-        int act = -1;
-        
-        while (act == -1)
-        {
-            int top = q.top().second;
-            int m = abs(q.top().first);
-            q.pop();
+        int act = q.top().second;
+        int m = abs(q.top().first);
+        q.pop();
 
-            if (m <= d[top])
-                act = top;
-        }
+        if (m > d[act])
+            continue;
 
         for (int j = 0; j < adj[act].size(); j++)
         {
-            if (d[act] + adj[act][j][1] < d[adj[act][j][0]])
+            if (d[act] + adj[act][j].second < d[adj[act][j].first])
             {
-                d[adj[act][j][0]] = d[act] + adj[act][j][1];
-                q.push({-d[adj[act][j][0]], adj[act][j][0]});
+                d[adj[act][j].first] = d[act] + adj[act][j].second;
+                q.push({-d[adj[act][j].first], adj[act][j].first});
             }
         }
-
     }
 
     return d;
