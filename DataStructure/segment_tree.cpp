@@ -2,127 +2,283 @@
 
 #define MAX(a, b) (a > b) ? a : b
 #define MIN(a, b) (a < b) ? a : b
-#define ll long long
+#define int long long
 #define vi vector<int>
-#define vll vector<long long>
+#define pii pair<int, int>
+#define vii vector<pii>
 
 using namespace std;
 
 class SegmentTree
 {
 private:
-    vi _a;
-    vector<int> _st;
-    vector<long long> _sum;
+    vi values;
+
+    vi p_values;
     int n;
 
     int left(int p) { return p << 1; };
 
     int right(int p) { return (p << 1) + 1; }
 
+    int simple_node(int index) { return values[index]; }
+
+    int prop(int x, int y) { return x + y; }
+
     void build(int p, int l, int r)
     {
         if (l == r)
         {
-            _st[p] = l;
-            _sum[p] = _a[l];
+            p_values[p] = simple_node(l);
+            return;
         }
-        else
-        {
-            build(left(p), l, (l + r) / 2);
-            build(right(p), (l + r) / 2 + 1, r);
 
-            int p1 = _st[left(p)];
-            int p2 = _st[right(p)];
+        build(left(p), l, (l + r) / 2);
+        build(right(p), (l + r) / 2 + 1, r);
 
-            _st[p] = (_a[p1] <= _a[p2]) ? p1 : p2;
-            _sum[p] = _sum[left(p)] + _sum[right(p)];
-        }
+        p_values[p] = prop(p_values[left(p)], p_values[right(p)]);
     }
 
     void set(int p, int l, int r, int i, int v)
     {
         if (l == r)
         {
-            _sum[p] = v;
-            _a[l] = v;
+            values[l] = v;
+            p_values[p] = simple_node(l);
+            return;
         }
+
+        if (i <= (l + r) / 2)
+            set(left(p), l, (l + r) / 2, i, v);
         else
-        {
-            if (i <= (l + r) / 2)
-                set(left(p), l, (l + r) / 2, i, v);
-            else
-                set(right(p), (l + r) / 2 + 1, r, i, v);
+            set(right(p), (l + r) / 2 + 1, r, i, v);
 
-            int p1 = _st[left(p)];
-            int p2 = _st[right(p)];
-
-            _st[p] = (_a[p1] <= _a[p2]) ? p1 : p2;
-            _sum[p] = _sum[left(p)] + _sum[right(p)];
-        }
+        p_values[p] = prop(p_values[left(p)], p_values[right(p)]);
     }
 
-    long long sum(int p, int l, int r, int i, int j)
+    int query(int p, int l, int r, int lq, int rq)
     {
-        if (i > r || j < l)
-            return 0;
-        if (i <= l && r <= j)
-            return _sum[p];
+        if (lq <= l && r <= rq)
+            return p_values[p];
 
-        long long p1 = sum(left(p), l, (l + r) / 2, i, j);
-        long long p2 = sum(right(p), (l + r) / 2 + 1, r, i, j);
+        int l1 = l, r1 = (l + r) / 2;
+        int l2 = (l + r) / 2 + 1, r2 = r;
 
-        return p1 + p2;
-    }
+        if (l1 > rq || lq > r1)
+            return query(right(p), l2, r2, lq, rq);
+        if (l2 > rq || lq > r2)
+            return query(left(p), l1, r1, lq, rq);
 
-    int rmq(int p, int l, int r, int i, int j)
-    {
-        if (i > r || j < l)
-            return -1;
-        if (i <= l && r <= j)
-            return _st[p];
+        int lt = query(left(p), l1, r1, lq, rq);
+        int rt = query(right(p), l2, r2, lq, rq);
 
-        int p1 = rmq(left(p), l, (l + r) / 2, i, j);
-        int p2 = rmq(right(p), (l + r) / 2 + 1, r, i, j);
-
-        if (p1 == -1)
-            return p2;
-        if (p2 == -1)
-            return p1;
-
-        return (_a[p1] <= _a[p2]) ? p1 : p2;
+        return prop(lt, rt);
     }
 
 public:
     SegmentTree(vi &a)
     {
-        _a = a;
+        values = a;
         n = a.size();
-        _st.assign(4 * n, 0);
-        _sum.assign(4 * n, 0);
+        p_values.assign(4 * n, 0);
         build(1, 0, n - 1);
     }
 
-    int rmq(int i, int j) { return rmq(1, 0, n - 1, i, j); }
-
-    long long sum(int i, int j) { return sum(1, 0, n - 1, i, j); }
+    int query(int i, int j) { return query(1, 0, n - 1, i, j); }
 
     void set(int i, int v) { set(1, 0, n - 1, i, v); }
 
-    int get(int i) { return _a[i]; }
+    int get(int i) { return values[i]; }
 };
 
-int main()
+class SegmentTreeLazy
+{
+private:
+    vi values;
+    vector<bool> lazy;
+    vi l_values;
+    vi p_values;
+    int n;
+
+    int left(int p) { return p << 1; };
+
+    int right(int p) { return (p << 1) + 1; }
+
+    int simple_node(int index) { return values[index]; }
+
+    int prop(int x, int y) { return x + y; }
+
+    int prop_lazy(int x, int y) { return x + y; }
+
+    int prop_lazy_up(int x, int y, int s) { return x + y * s; }
+
+    void update_lazy(int p, int l, int r)
+    {
+        if (l == r)
+        {
+            values[l] = prop_lazy(values[l], l_values[p]);
+        }
+
+        p_values[p] = prop_lazy_up(p_values[p], l_values[p], r - l + 1);
+    }
+
+    void propagate_lazy(int p, int l, int r)
+    {
+        lazy[p] = false;
+
+        if (l == r)
+            return;
+
+        l_values[left(p)] = lazy[left(p)] ? prop_lazy(l_values[left(p)], l_values[p]) : l_values[p];
+        l_values[right(p)] = lazy[right(p)] ? prop_lazy(l_values[right(p)], l_values[p]) : l_values[p];
+
+        lazy[left(p)] = true;
+        lazy[right(p)] = true;
+    }
+
+    void build(int p, int l, int r)
+    {
+        if (l == r)
+        {
+            p_values[p] = simple_node(l);
+            return;
+        }
+
+        build(left(p), l, (l + r) / 2);
+        build(right(p), (l + r) / 2 + 1, r);
+
+        p_values[p] = prop(p_values[left(p)], p_values[right(p)]);
+    }
+
+    void set(int p, int l, int r, int i, int v)
+    {
+        if (lazy[p])
+        {
+            update_lazy(p, l, r);
+            propagate_lazy(p, l, r);
+        }
+
+        if (l == r)
+        {
+            values[l] = v;
+            p_values[p] = simple_node(l);
+            return;
+        }
+
+        if (i <= (l + r) / 2)
+            set(left(p), l, (l + r) / 2, i, v);
+        else
+            set(right(p), (l + r) / 2 + 1, r, i, v);
+
+        p_values[p] = prop(p_values[left(p)], p_values[right(p)]);
+    }
+
+    int query(int p, int l, int r, int lq, int rq)
+    {
+        if (lazy[p])
+        {
+            update_lazy(p, l, r);
+            propagate_lazy(p, l, r);
+        }
+
+        if (lq <= l && r <= rq)
+            return p_values[p];
+
+        int l1 = l, r1 = (l + r) / 2;
+        int l2 = (l + r) / 2 + 1, r2 = r;
+
+        if (l1 > rq || lq > r1)
+            return query(right(p), l2, r2, lq, rq);
+        if (l2 > rq || lq > r2)
+            return query(left(p), l1, r1, lq, rq);
+
+        int lt = query(left(p), l1, r1, lq, rq);
+        int rt = query(right(p), l2, r2, lq, rq);
+
+        return prop(lt, rt);
+    }
+
+    void set_rank(int p, int l, int r, int lq, int rq, int value)
+    {
+        if (lazy[p])
+        {
+            update_lazy(p, l, r);
+            propagate_lazy(p, l, r);
+        }
+
+        if (l > rq || lq > r)
+            return;
+
+        if (lq <= l && r <= rq)
+        {
+            lazy[p] = true;
+            l_values[p] = value;
+            update_lazy(p, l, r);
+            propagate_lazy(p, l, r);
+            return;
+        }
+
+        set_rank(left(p), l, (l + r) / 2, lq, rq, value);
+        set_rank(right(p), (l + r) / 2 + 1, r, lq, rq, value);
+
+        p_values[p] = prop(p_values[left(p)], p_values[right(p)]);
+    }
+
+    int get(int p, int l, int r, int i)
+    {
+        if (lazy[p])
+        {
+            update_lazy(p, l, r);
+            propagate_lazy(p, l, r);
+        }
+
+        if (l == r)
+            return values[i];
+
+        if (i <= (l + r) / 2)
+            return get(left(p), l, (l + r) / 2, i);
+
+        return get(right(p), (l + r) / 2 + 1, r, i);
+    }
+
+public:
+    SegmentTreeLazy(vi &a)
+    {
+        values = a;
+        n = a.size();
+        p_values.assign(4 * n, 0);
+        lazy.assign(4 * n, false);
+        l_values.assign(4 * n, 0);
+        build(1, 0, n - 1);
+    }
+
+    int query(int i, int j) { return query(1, 0, n - 1, i, j); }
+
+    void set(int i, int v) { set(1, 0, n - 1, i, v); }
+
+    void set_rank(int i, int j, int v) { set_rank(1, 0, n - 1, i, j, v); }
+
+    int get(int i) { return get(1, 0, n - 1, i); }
+};
+
+int32_t main()
 {
     ios_base::sync_with_stdio(0);
     cin.tie(0);
 
-    int t;
-    cin >> t;
+    // int n, m;
+    // cin >> n >> m;
 
-    for (int i = 0; i < t; i++)
-    {
-    }
+    vi a;
+    a.push_back(1);
+    a.push_back(2);
+    a.push_back(3);
+    a.push_back(4);
+    // for (int i = 0; i < n; i++)
+    //     cin >> a[i];
+
+    SegmentTreeLazy s(a);
+    cout << s.get(3) << "\n";
 
     return 0;
 }

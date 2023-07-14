@@ -29,12 +29,14 @@ private:
         return rmq(a, b);
     }
 
+    int simple_node(int i) { return i; }
+
     void build_sparse_table()
     {
         int n = arr.size();
 
         for (int i = 0; i < n; i++)
-            lookup[i][0] = i;
+            lookup[i][0] = simple_node(i);
 
         for (int j = 1; (1 << j) <= n; j++)
         {
