@@ -2,9 +2,8 @@
 
 #define MAX(a, b) (a > b) ? a : b
 #define MIN(a, b) (a < b) ? a : b
-#define ll long long
+#define int long long
 #define vi vector<int>
-#define vll vector<long long>
 
 using namespace std;
 
@@ -83,7 +82,7 @@ void solve()
     cout << s.query(1, 3) << "\n";
 }
 
-int main()
+int32_t main()
 {
     ios_base::sync_with_stdio(0);
     cin.tie(0);

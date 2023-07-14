@@ -2,9 +2,7 @@
 
 #define MAX(a, b) (a > b) ? a : b
 #define MIN(a, b) (a < b) ? a : b
-#define ll long long
 #define vi vector<int>
-#define vll vector<long long>
 
 using namespace std;
 
@@ -36,9 +34,9 @@ vi bfs(int node, int n, vi adj[])
     vi result(n);
     vector<bool> visited;
     visited.assign(n, false);
-    
+
     queue<int> q;
-    visited[node]=true;
+    visited[node] = true;
 
     q.push(node);
 

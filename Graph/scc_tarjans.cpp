@@ -2,9 +2,7 @@
 
 #define MAX(a, b) (a > b) ? a : b
 #define MIN(a, b) (a < b) ? a : b
-#define ll long long
 #define vi vector<int>
-#define vll vector<long long>
 
 using namespace std;
 

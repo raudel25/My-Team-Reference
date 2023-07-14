@@ -266,19 +266,5 @@ int32_t main()
     ios_base::sync_with_stdio(0);
     cin.tie(0);
 
-    // int n, m;
-    // cin >> n >> m;
-
-    vi a;
-    a.push_back(1);
-    a.push_back(2);
-    a.push_back(3);
-    a.push_back(4);
-    // for (int i = 0; i < n; i++)
-    //     cin >> a[i];
-
-    SegmentTreeLazy s(a);
-    cout << s.get(3) << "\n";
-
     return 0;
 }

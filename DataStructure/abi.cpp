@@ -2,9 +2,8 @@
 
 #define MAX(a, b) (a > b) ? a : b
 #define MIN(a, b) (a < b) ? a : b
-#define ll long long
+#define int long long
 #define vi vector<int>
-#define vll vector<long long>
 
 using namespace std;
 
@@ -12,7 +11,7 @@ class Abi
 {
 
 private:
-    vll p;
+    vi p;
     int _size;
 
     int ls_one(int i) { return i & (-i); }
@@ -24,9 +23,9 @@ public:
         p.assign(n + 1, 0);
     }
 
-    ll rsq(int k)
+    int rsq(int k)
     {
-        ll sum = 0;
+        int sum = 0;
 
         for (int i = k; i > 0; i -= ls_one(i))
         {
@@ -36,7 +35,7 @@ public:
         return sum;
     }
 
-    ll sum(int a, int b) { return rsq(b) - rsq(a - 1); }
+    int sum(int a, int b) { return rsq(b) - rsq(a - 1); }
 
     void adjust_sum(int k, int v)
     {
@@ -50,7 +49,7 @@ public:
     }
 };
 
-int main()
+int32_t main()
 {
     ios_base::sync_with_stdio(0);
     cin.tie(0);
