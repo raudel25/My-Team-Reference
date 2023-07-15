@@ -2,6 +2,7 @@
 
 using namespace std;
 
+// begin
 struct avl
 {
     int key;
@@ -204,3 +205,4 @@ struct avl
             delete right;
     }
 };
+// end

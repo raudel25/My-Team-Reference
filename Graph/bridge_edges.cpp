@@ -6,6 +6,7 @@
 
 using namespace std;
 
+// begin
 vector<bool> visited;
 vector<int> t;
 vector<int> low;
@@ -56,6 +57,7 @@ set<pair<int, int>> bridge_edges(int V, vector<int> adj[])
 
     return bridges;
 }
+// end
 
 void solve()
 {

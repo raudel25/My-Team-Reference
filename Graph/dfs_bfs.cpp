@@ -6,6 +6,7 @@
 
 using namespace std;
 
+// begin
 void dfs_g(int n, int c, vi adj[], vector<bool> &visited, vi &cc)
 {
     visited[n] = true;
@@ -58,6 +59,7 @@ vi bfs(int node, int n, vi adj[])
 
     return result;
 }
+// end
 
 void solve()
 {

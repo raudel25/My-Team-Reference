@@ -8,6 +8,7 @@
 
 using namespace std;
 
+// begin
 class SparseTable
 {
 
@@ -61,7 +62,8 @@ public:
     {
         int q = (int)log2(r - l + 1);
 
-        return operation(lookup[l][q], lookup[r - (1 << q) + 1][q]);
+        return operation(lookup[l][q],
+                         lookup[r - (1 << q) + 1][q]);
     }
 
     int get(int i) { return arr[i]; }
@@ -122,6 +124,7 @@ vi lca(int root, int n, vi adj[], vii &querys)
 
     return resp;
 }
+// end
 
 void solve()
 {

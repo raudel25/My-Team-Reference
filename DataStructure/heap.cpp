@@ -8,6 +8,7 @@
 
 using namespace std;
 
+// begin
 class Heap
 {
 
@@ -162,6 +163,7 @@ public:
         return _size;
     }
 };
+// end
 
 int main()
 {

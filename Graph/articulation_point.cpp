@@ -6,6 +6,7 @@
 
 using namespace std;
 
+// begin
 vector<bool> visited;
 vector<int> t;
 vector<int> low;
@@ -43,6 +44,7 @@ void dfs_art(vector<int> adj[], int n, int p, int q)
         art[n] = j >= 2;
     }
 }
+// end
 
 vector<int> articulationPoints(int V, vector<int> adj[])
 {

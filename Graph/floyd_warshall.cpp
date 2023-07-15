@@ -6,6 +6,7 @@
 
 using namespace std;
 
+// begin
 int infinite = (int)1e8;
 
 void shortest_distance(vector<vector<int>> &matrix)
@@ -35,6 +36,7 @@ void find_path_k(vector<vector<bool>> &matrix, int k)
         }
     }
 }
+// end
 
 void solve()
 {

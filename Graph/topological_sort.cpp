@@ -6,6 +6,7 @@
 
 using namespace std;
 
+// begin
 vector<int> topoSort(int V, vector<int> adj[])
 {
     vector<int> in(V);
@@ -45,6 +46,7 @@ vector<int> topoSort(int V, vector<int> adj[])
 
     return resp;
 }
+// end
 
 void solve()
 {

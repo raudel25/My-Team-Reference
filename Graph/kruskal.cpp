@@ -6,6 +6,7 @@
 
 using namespace std;
 
+// begin
 class ufds
 {
 private:
@@ -93,6 +94,7 @@ int spanningTreeKruskal(int V, vector<vector<int>> adj[])
 
     return cost;
 }
+// end
 
 void solve()
 {

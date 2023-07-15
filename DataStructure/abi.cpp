@@ -7,6 +7,7 @@
 
 using namespace std;
 
+// begin
 class Abi
 {
 
@@ -48,6 +49,7 @@ public:
         return _size;
     }
 };
+// end
 
 int32_t main()
 {

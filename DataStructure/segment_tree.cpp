@@ -9,6 +9,7 @@
 
 using namespace std;
 
+// begin
 class SegmentTree
 {
 private:
@@ -129,8 +130,12 @@ private:
         if (l == r)
             return;
 
-        l_values[left(p)] = lazy[left(p)] ? prop_lazy(l_values[left(p)], l_values[p]) : l_values[p];
-        l_values[right(p)] = lazy[right(p)] ? prop_lazy(l_values[right(p)], l_values[p]) : l_values[p];
+        l_values[left(p)] = lazy[left(p)]
+                                ? prop_lazy(l_values[left(p)], l_values[p])
+                                : l_values[p];
+        l_values[right(p)] = lazy[right(p)]
+                                 ? prop_lazy(l_values[right(p)], l_values[p])
+                                 : l_values[p];
 
         lazy[left(p)] = true;
         lazy[right(p)] = true;
@@ -260,6 +265,7 @@ public:
 
     int get(int i) { return get(1, 0, n - 1, i); }
 };
+// end
 
 int32_t main()
 {

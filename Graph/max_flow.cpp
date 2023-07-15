@@ -8,6 +8,7 @@
 
 using namespace std;
 
+// begin
 template <typename flow_type>
 struct dinic
 {
@@ -87,6 +88,7 @@ struct dinic
         return flow;
     }
 };
+// end
 
 void solve()
 {

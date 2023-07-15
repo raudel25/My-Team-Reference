@@ -7,6 +7,7 @@
 
 using namespace std;
 
+// begin
 class SparseTable
 {
 
@@ -15,17 +16,12 @@ private:
 
     vi arr;
 
-    int rmq(int a, int b)
+    int operation(int a, int b)
     {
         if (arr[a] <= arr[b])
             return a;
 
         return b;
-    }
-
-    int operation(int a, int b)
-    {
-        return rmq(a, b);
     }
 
     int simple_node(int i) { return i; }
@@ -40,7 +36,8 @@ private:
         for (int j = 1; (1 << j) <= n; j++)
         {
             for (int i = 0; i <= n - (1 << j); i++)
-                lookup[i][j] = operation(lookup[i][j - 1], lookup[i + (1 << (j - 1))][j - 1]);
+                lookup[i][j] = operation(lookup[i][j - 1],
+                                         lookup[i + (1 << (j - 1))][j - 1]);
         }
     }
 
@@ -67,6 +64,7 @@ public:
 
     int get(int i) { return arr[i]; }
 };
+// end
 
 void solve()
 {

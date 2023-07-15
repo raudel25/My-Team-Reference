@@ -7,6 +7,7 @@
 
 using namespace std;
 
+// begin
 int infinite = (int)1e9;
 
 // O(V^2)
@@ -84,6 +85,7 @@ vi dijkstra2(int V, vii adj[], int S)
 
     return d;
 }
+// end
 
 void solve()
 {

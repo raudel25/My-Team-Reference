@@ -6,6 +6,7 @@
 
 using namespace std;
 
+// begin
 int infinite = (int)1e9;
 
 vector<int> bellman_ford(int V, vector<vector<int>> &edges, int S)
@@ -38,6 +39,7 @@ vector<int> bellman_ford(int V, vector<vector<int>> &edges, int S)
 
     return d;
 }
+// end
 
 void solve()
 {

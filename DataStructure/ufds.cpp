@@ -5,6 +5,7 @@
 
 using namespace std;
 
+// begin
 class ufds
 {
 private:
@@ -60,6 +61,7 @@ public:
 
     int sizeofSet(int i) { return sizeSet[find(i)]; }
 };
+// end
 
 int main()
 {

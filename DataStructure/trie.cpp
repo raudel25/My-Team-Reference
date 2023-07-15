@@ -2,13 +2,14 @@
 
 #define MAX(a, b) (a > b) ? a : b
 #define MIN(a, b) (a < b) ? a : b
-#define int long long 
+#define int long long
 #define vi vector<int>
 
 using namespace std;
 
 #define alphabet 26
 
+// begin
 class Trie
 {
 private:
@@ -121,6 +122,7 @@ public:
 
     int size() { return cant_node; }
 };
+// end
 
 void solve()
 {

@@ -6,6 +6,7 @@
 
 using namespace std;
 
+// begin
 stack<int> q;
 vector<bool> mask;
 vector<int> cc_list;
@@ -73,6 +74,7 @@ void tarjans(int V, vector<int> adj[])
         }
     }
 }
+// end
 
 void solve()
 {

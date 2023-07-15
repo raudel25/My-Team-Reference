@@ -6,6 +6,7 @@
 
 using namespace std;
 
+// begin
 int spanningTreePrim(int V, vector<vector<int>> adj[])
 {
 
@@ -45,6 +46,7 @@ int spanningTreePrim(int V, vector<vector<int>> adj[])
 
     return cost;
 }
+// end
 
 void solve()
 {
