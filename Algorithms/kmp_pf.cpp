@@ -8,6 +8,7 @@
 
 using namespace std;
 
+// begin
 vi prefix_function(string p)
 {
     vi pf(p.size());
@@ -52,6 +53,7 @@ vi kmp(string t, string p)
 
     return result;
 }
+// end
 
 int main()
 {
