@@ -1,3 +1,4 @@
+// begin
 #include <bits/stdc++.h>
 
 #define MAX(a, b) (a > b) ? a : b
@@ -28,3 +29,4 @@ int32_t main()
 
     return 0;
 }
+// end
