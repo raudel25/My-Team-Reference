@@ -8,11 +8,11 @@ using namespace std;
 
 // begin
 vector<bool> visited;
-vector<int> t;
-vector<int> low;
+vi t;
+vi low;
 vector<bool> art;
 
-void dfs_art(vector<int> adj[], int n, int p, int q)
+void dfs_art(vi adj[], int n, int p, int q)
 {
     t[n] = q;
     low[n] = q++;
@@ -44,9 +44,8 @@ void dfs_art(vector<int> adj[], int n, int p, int q)
         art[n] = j >= 2;
     }
 }
-// end
 
-vector<int> articulationPoints(int V, vector<int> adj[])
+void articulationPoints(int V, vi adj[])
 {
     visited.assign(V, false);
     t.assign(V, -1);
@@ -60,19 +59,9 @@ vector<int> articulationPoints(int V, vector<int> adj[])
             dfs_art(adj, i, -1, 1);
         }
     }
-
-    vector<int> resp;
-
-    for (int i = 0; i < V; i++)
-    {
-        if (art[i])
-            resp.push_back(i);
-    }
-    if (resp.size() == 0)
-        resp.push_back(-1);
-
-    return resp;
 }
+
+// end
 
 void solve()
 {
