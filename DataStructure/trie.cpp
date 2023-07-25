@@ -8,6 +8,7 @@
 using namespace std;
 
 #define alphabet 26
+#define first_char 'a'
 
 // begin
 class Trie
@@ -28,7 +29,7 @@ public:
         value = a;
 
         for (int i = 0; i < alphabet; i++)
-            children[i] = nullptr;
+            children[i] = NULL;
     }
 
     pair<Trie *, int> search(string s)
@@ -36,9 +37,9 @@ public:
         Trie *node = this;
         int i = 0;
 
-        while (node->children[s[i] - 'a'] != nullptr && i < s.size())
+        while (i < s.size() && node->children[s[i] - first_char] != NULL)
         {
-            node = node->children[s[i] - 'a'];
+            node = node->children[s[i] - first_char];
 
             i++;
         }
@@ -56,13 +57,13 @@ public:
         {
             node->cant_node += q;
 
-            if (node->children[s[i] - 'a'] == nullptr)
+            if (node->children[s[i] - first_char] == NULL)
             {
-                node->children[s[i] - 'a'] = new Trie(s[i]);
+                node->children[s[i] - first_char] = new Trie(s[i]);
                 q--;
             }
 
-            node = node->children[s[i] - 'a'];
+            node = node->children[s[i] - first_char];
             node->cant_string_me++;
         }
 
@@ -79,20 +80,20 @@ public:
 
         for (int i = 0; i < s.size(); i++)
         {
-            if (node->children[s[i] - 'a'] == nullptr)
+            if (node->children[s[i] - first_char] == NULL)
             {
-                node->children[s[i] - 'a'] = new Trie(s[i]);
+                node->children[s[i] - first_char] = new Trie(s[i]);
             }
 
-            if (node->children[s[i] - 'a']->cant_string_me == 1)
+            if (node->children[s[i] - first_char]->cant_string_me == 1)
             {
-                node->children[s[i] - 'a'] = nullptr;
+                node->children[s[i] - first_char] = NULL;
 
                 q = s.size() - i;
                 break;
             }
 
-            node = node->children[s[i] - 'a'];
+            node = node->children[s[i] - first_char];
             node->cant_string_me--;
 
             if (i == s.size() - 1)
@@ -104,7 +105,7 @@ public:
         for (int i = 0; i < s.size() - q + 1; i++)
         {
             node->cant_node -= q;
-            node = node->children[s[i] - 'a'];
+            node = node->children[s[i] - first_char];
         }
     }
 
@@ -118,7 +119,7 @@ public:
 
     int cant_words() { return cant_string; }
 
-    Trie *get(char a) { return children[a - 'a']; }
+    Trie *get(char a) { return children[a - first_char]; }
 
     int size() { return cant_node; }
 };
