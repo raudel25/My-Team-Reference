@@ -16,14 +16,8 @@ class SuffixArray
 public:
     SuffixArray(string s)
     {
-        n = s.size();
-        t = (char *)malloc(sizeof(char) * (n + 1));
+        n = s.size() + 1;
         s_value = s + "$";
-
-        for (int i = 0; i < n; i++)
-            t[i] = s[i];
-        t[n++] = '$';
-        t[n] = 0;
 
         ra.assign(n, 0);
         sa.assign(n, 0);
@@ -37,10 +31,19 @@ public:
 
     int get_int(int i) { return sa[i]; }
 
+    int cant_match(string p)
+    {
+        pii ans = matching(p);
+
+        if (ans.first == -1 && ans.second == -1)
+            return 0;
+
+        return ans.second - ans.first + 1;
+    }
+
     string get_str(int i) { return s_value.substr(sa[i], n - sa[i] - 1); }
 
 private:
-    char *t;
     string s_value;
     int n;
 
@@ -62,9 +65,9 @@ private:
 
         for (int i = 0; i < maxi; i++)
         {
-            int t = c[i];
+            int tx = c[i];
             c[i] = sum;
-            sum += t;
+            sum += tx;
         }
 
         for (int i = 0; i < n; i++)
@@ -80,7 +83,7 @@ private:
 
         for (int i = 0; i < n; i++)
         {
-            ra[i] = t[i];
+            ra[i] = s_value[i];
             sa[i] = i;
         }
 
@@ -102,7 +105,57 @@ private:
         }
     }
 
-    
+    pii matching(string p)
+    {
+        int l = 0;
+        int r = n - 1;
+        int p_size = p.size();
+
+        string comp;
+
+        while (l < r)
+        {
+            int m = (l + r) / 2;
+
+            comp = s_value.substr(sa[m], min(n - sa[m], p_size));
+           
+            if (comp >= p)
+                r = m;
+            else
+                l = m + 1;
+        }
+
+        comp = s_value.substr(sa[l], min(n - sa[l], p_size));
+
+        if (comp != p)
+            return {-1, -1};
+
+        int ans_l = l;
+
+        l = 0;
+        r = n - 1;
+
+        while (l < r)
+        {
+            int m = (l + r) / 2;
+
+            comp = s_value.substr(sa[m], min(n - sa[m], p_size));
+
+            if (comp > p)
+                r = m;
+            else
+                l = m + 1;
+        }
+
+        comp = s_value.substr(sa[r], min(n - sa[r], p_size));
+
+        if (comp != p)
+            r--;
+
+        int ans_r = r;
+
+        return {ans_l, ans_r};
+    }
 };
 // end;
 
@@ -113,9 +166,16 @@ void solve()
 
     SuffixArray suffix(s);
 
-    for (int i = 0; i < suffix.size(); i++)
-        cout << suffix.get_int(i) << " ";
-    cout << "\n";
+    int q;
+    cin >> q;
+
+    for (int i = 0; i < q; i++)
+    {
+        string x;
+        cin >> x;
+
+        cout << suffix.cant_match(x) << "\n";
+    }
 }
 
 int32_t main()
@@ -124,6 +184,6 @@ int32_t main()
     cin.tie(0);
 
     solve();
-   
+
     return 0;
 }
