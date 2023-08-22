@@ -44,11 +44,14 @@ public:
 
     int get_lcp(int i) { return plcp[sa[i]]; }
 
+    int cant_substr() { return v_cant_substr; }
+
     string get_str(int i) { return s_value.substr(sa[i], n - sa[i] - 1); }
 
 private:
     string s_value;
     int n;
+    int v_cant_substr;
 
     vi ra;
     vi sa;
@@ -173,6 +176,7 @@ private:
             phi[sa[i]] = sa[i - 1];
 
         int l = 0;
+        int q = 0;
         for (int i = 0; i < n; i++)
         {
             if (phi[i] == -1)
@@ -185,8 +189,11 @@ private:
                 l++;
 
             plcp[i] = l;
+            q += l;
             l = max(l - 1, (int)0);
         }
+
+        v_cant_substr = n * (n - 1) / 2 - q;
     }
 };
 // end;
@@ -197,13 +204,9 @@ void solve()
     cin >> s;
 
     SuffixArray suffix(s);
+    int n = s.size();
 
-    for (int i = 0; i < suffix.size(); i++)
-        cout << suffix.get_int(i) << " ";
-    cout << "\n";
-    for (int i = 0; i < s.size(); i++)
-        cout << suffix.get_lcp(i + 1) << " ";
-    cout << "\n";
+    cout << suffix.cant_substr() << "\n";
 }
 
 int32_t main()
