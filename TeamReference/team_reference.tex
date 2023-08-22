@@ -871,367 +871,6 @@ void tarjans(int V, vector<int> adj[])
 
 \end{lstlisting}
 \end{multicols}
-\section{Strings}
-Suffix Array
-\begin{multicols}{2}
-\begin{lstlisting}[language=C++]
-class SuffixArray
-{
-
-public:
-    SuffixArray(string s)
-    {
-        n = s.size() + 1;
-        s_value = s + "$";
-
-        ra.assign(n, 0);
-        sa.assign(n, 0);
-        temp_ra.assign(n, 0);
-        temp_sa.assign(n, 0);
-
-        construct_sa();
-        build_lcp();
-    }
-
-    int size() { return n; }
-
-    int get_int(int i) { return sa[i]; }
-
-    int cant_match(string p)
-    {
-        pii ans = matching(p);
-
-        if (ans.first == -1 && ans.second == -1)
-            return 0;
-
-        return ans.second - ans.first + 1;
-    }
-
-    int get_lcp(int i) { return plcp[sa[i]]; }
-
-    int cant_substr() { return v_cant_substr; }
-
-    string get_str(int i) { return s_value.substr(sa[i], n - sa[i] - 1); }
-
-private:
-    string s_value;
-    int n;
-    int v_cant_substr;
-
-    vi ra;
-    vi sa;
-    vi c;
-    vi temp_ra;
-    vi temp_sa;
-    vi phi;
-    vi plcp;
-
-    void counting_sort(int k)
-    {
-        int sum = 0;
-        int maxi = max((int)300, n);
-
-        c.assign(maxi, 0);
-
-        for (int i = 0; i < n; i++)
-            c[i + k < n ? ra[i + k] : 0]++;
-
-        for (int i = 0; i < maxi; i++)
-        {
-            int tx = c[i];
-            c[i] = sum;
-            sum += tx;
-        }
-
-        for (int i = 0; i < n; i++)
-            temp_sa[c[sa[i] + k < n ? ra[sa[i] + k] : 0]++] = sa[i];
-
-        for (int i = 0; i < n; i++)
-            sa[i] = temp_sa[i];
-    }
-
-    void construct_sa()
-    {
-        int k, r;
-
-        for (int i = 0; i < n; i++)
-        {
-            ra[i] = s_value[i];
-            sa[i] = i;
-        }
-
-        for (k = 1; k < n; k <<= 1)
-        {
-            counting_sort(k);
-            counting_sort(0);
-
-            temp_ra[sa[0]] = r = 0;
-
-            for (int i = 1; i < n; i++)
-                temp_ra[sa[i]] = (ra[sa[i]] == ra[sa[i - 1]] && ra[sa[i] + k] == ra[sa[i - 1] + k]) ? r : ++r;
-
-            for (int i = 0; i < n; i++)
-                ra[i] = temp_ra[i];
-
-            if (ra[sa[n - 1]] == n - 1)
-                break;
-        }
-    }
-
-    pii matching(string p)
-    {
-        int l = 0;
-        int r = n - 1;
-        int p_size = p.size();
-
-        string comp;
-
-        while (l < r)
-        {
-            int m = (l + r) / 2;
-
-            comp = s_value.substr(sa[m], min(n - sa[m], p_size));
-
-            if (comp >= p)
-                r = m;
-            else
-                l = m + 1;
-        }
-
-        comp = s_value.substr(sa[l], min(n - sa[l], p_size));
-
-        if (comp != p)
-            return {-1, -1};
-
-        int ans_l = l;
-
-        l = 0;
-        r = n - 1;
-
-        while (l < r)
-        {
-            int m = (l + r) / 2;
-
-            comp = s_value.substr(sa[m], min(n - sa[m], p_size));
-
-            if (comp > p)
-                r = m;
-            else
-                l = m + 1;
-        }
-
-        comp = s_value.substr(sa[r], min(n - sa[r], p_size));
-
-        if (comp != p)
-            r--;
-
-        int ans_r = r;
-
-        return {ans_l, ans_r};
-    }
-
-    void build_lcp()
-    {
-        phi.assign(n, 0);
-        plcp.assign(n, 0);
-
-        phi[0] = -1;
-
-        for (int i = 1; i < n; i++)
-            phi[sa[i]] = sa[i - 1];
-
-        int l = 0;
-        int q = 0;
-        for (int i = 0; i < n; i++)
-        {
-            if (phi[i] == -1)
-            {
-                plcp[i] = 0;
-                continue;
-            }
-
-            while (s_value[i + l] == s_value[phi[i] + l])
-                l++;
-
-            plcp[i] = l;
-            q += l;
-            l = max(l - 1, (int)0);
-        }
-
-        v_cant_substr = n * (n - 1) / 2 - q;
-    }
-};
-
-\end{lstlisting}
-\end{multicols}
-Trie
-\begin{multicols}{2}
-\begin{lstlisting}[language=C++]
-class Trie
-{
-private:
-    int cant_string;
-    int cant_string_me;
-    int cant_node;
-    char value;
-    Trie *children[alphabet];
-
-public:
-    Trie(char a)
-    {
-        cant_string = 0;
-        cant_node = 1;
-        cant_string_me = 0;
-        value = a;
-
-        for (int i = 0; i < alphabet; i++)
-            children[i] = NULL;
-    }
-
-    pair<Trie *, int> search(string s)
-    {
-        Trie *node = this;
-        int i = 0;
-
-        while (i < s.size() && node->children[s[i] - first_char] != NULL)
-        {
-            node = node->children[s[i] - first_char];
-
-            i++;
-        }
-
-        return {node, i};
-    }
-
-    void insert(string s)
-    {
-        int q = s.size() - search(s).second;
-
-        Trie *node = this;
-
-        for (int i = 0; i < s.size(); i++)
-        {
-            node->cant_node += q;
-
-            if (node->children[s[i] - first_char] == NULL)
-            {
-                node->children[s[i] - first_char] = new Trie(s[i]);
-                q--;
-            }
-
-            node = node->children[s[i] - first_char];
-            node->cant_string_me++;
-        }
-
-        node->cant_string++;
-    }
-
-    void eliminate(string s)
-    {
-        if (!contains(s))
-            return;
-
-        Trie *node = this;
-        int q = 0;
-
-        for (int i = 0; i < s.size(); i++)
-        {
-            if (node->children[s[i] - first_char] == NULL)
-            {
-                node->children[s[i] - first_char] = new Trie(s[i]);
-            }
-
-            if (node->children[s[i] - first_char]->cant_string_me == 1)
-            {
-                node->children[s[i] - first_char] = NULL;
-
-                q = s.size() - i;
-                break;
-            }
-
-            node = node->children[s[i] - first_char];
-            node->cant_string_me--;
-
-            if (i == s.size() - 1)
-                node->cant_string--;
-        }
-
-        node = this;
-
-        for (int i = 0; i < s.size() - q + 1; i++)
-        {
-            node->cant_node -= q;
-            node = node->children[s[i] - first_char];
-        }
-    }
-
-    bool contains(string s)
-    {
-        auto q = search(s);
-        return q.second == s.size() && q.first->cant_string >= 1;
-    }
-
-    int cant_words_me() { return cant_string_me; }
-
-    int cant_words() { return cant_string; }
-
-    Trie *get(char a) { return children[a - first_char]; }
-
-    int size() { return cant_node; }
-};
-
-\end{lstlisting}
-\end{multicols}
-Kmp Pf
-\begin{multicols}{2}
-\begin{lstlisting}[language=C++]
-vi prefix_function(string p)
-{
-    vi pf(p.size());
-
-    pf[0] = 0;
-    int k = 0;
-
-    for (int i = 1; i < p.size(); i++)
-    {
-        while (k > 0 && p[k] != p[i])
-            k = pf[k - 1];
-
-        if (p[k] == p[i])
-            k++;
-
-        pf[i] = k;
-    }
-
-    return pf;
-}
-
-vi kmp(string t, string p)
-{
-    vi result;
-    vi pf = prefix_function(p);
-    int k = 0;
-
-    for (int i = 0; i < t.size(); i++)
-    {
-        while (k > 0 && p[k] != t[i])
-            k = pf[k - 1];
-
-        if (p[k] == t[i])
-            k++;
-
-        if (k == p.size())
-        {
-            result.push_back(i - (p.size() - 1));
-            k = pf[k - 1];
-        }
-    }
-
-    return result;
-}
-
-\end{lstlisting}
-\end{multicols}
 \section{DataStructure}
 Segment Tree
 \begin{multicols}{2}
@@ -2034,6 +1673,413 @@ public:
 
     int get(int i) { return get(1, 0, n - 1, i); }
 };
+
+\end{lstlisting}
+\end{multicols}
+\section{String}
+Z Function
+\begin{multicols}{2}
+\begin{lstlisting}[language=C++]
+// Z[i] is the length of the longest substring
+// starting from S[i] which is also a prefix of S.
+vi z_function(string s)
+{
+    int n = (int)s.length();
+    vi z(n);
+
+    for (int i = 1, l = 0, r = 0; i < n; ++i)
+    {
+        if (i <= r)
+            z[i] = min(r - i + 1, z[i - l]);
+        while (i + z[i] < n && s[z[i]] == s[i + z[i]])
+            ++z[i];
+        if (i + z[i] - 1 > r)
+            l = i, r = i + z[i] - 1;
+    }
+    return z;
+}
+
+// suff[i] = length of the longest common suffix of s and s[0..i]
+vi suffixes(const string &s)
+{
+    int n = s.length();
+
+    vi suff(n, n);
+
+    for (int i = n - 2, g = n - 1, f; i >= 0; --i)
+    {
+        if (i > g && suff[i + n - 1 - f] != i - g)
+            suff[i] = min(suff[i + n - 1 - f], i - g);
+        else
+        {
+            for (g = min(g, f = i); g >= 0 && s[g] == s[g + n - 1 - f]; --g)
+                ;
+            suff[i] = f - g;
+        }
+    }
+
+    return suff;
+}
+
+\end{lstlisting}
+\end{multicols}
+Suffix Array
+\begin{multicols}{2}
+\begin{lstlisting}[language=C++]
+class SuffixArray
+{
+
+public:
+    SuffixArray(string s)
+    {
+        n = s.size() + 1;
+        s_value = s + "$";
+
+        ra.assign(n, 0);
+        sa.assign(n, 0);
+        temp_ra.assign(n, 0);
+        temp_sa.assign(n, 0);
+
+        construct_sa();
+        build_lcp();
+    }
+
+    int size() { return n; }
+
+    int get_int(int i) { return sa[i]; }
+
+    int cant_match(string p)
+    {
+        pii ans = matching(p);
+
+        if (ans.first == -1 && ans.second == -1)
+            return 0;
+
+        return ans.second - ans.first + 1;
+    }
+
+    int get_lcp(int i) { return plcp[sa[i]]; }
+
+    int cant_substr() { return v_cant_substr; }
+
+    string get_str(int i) { return s_value.substr(sa[i], n - sa[i] - 1); }
+
+private:
+    string s_value;
+    int n;
+    int v_cant_substr;
+
+    vi ra;
+    vi sa;
+    vi c;
+    vi temp_ra;
+    vi temp_sa;
+    vi phi;
+    vi plcp;
+
+    void counting_sort(int k)
+    {
+        int sum = 0;
+        int maxi = max((int)300, n);
+
+        c.assign(maxi, 0);
+
+        for (int i = 0; i < n; i++)
+            c[i + k < n ? ra[i + k] : 0]++;
+
+        for (int i = 0; i < maxi; i++)
+        {
+            int tx = c[i];
+            c[i] = sum;
+            sum += tx;
+        }
+
+        for (int i = 0; i < n; i++)
+            temp_sa[c[sa[i] + k < n ? ra[sa[i] + k] : 0]++] = sa[i];
+
+        for (int i = 0; i < n; i++)
+            sa[i] = temp_sa[i];
+    }
+
+    void construct_sa()
+    {
+        int k, r;
+
+        for (int i = 0; i < n; i++)
+        {
+            ra[i] = s_value[i];
+            sa[i] = i;
+        }
+
+        for (k = 1; k < n; k <<= 1)
+        {
+            counting_sort(k);
+            counting_sort(0);
+
+            temp_ra[sa[0]] = r = 0;
+
+            for (int i = 1; i < n; i++)
+                temp_ra[sa[i]] = (ra[sa[i]] == ra[sa[i - 1]] && ra[sa[i] + k] == ra[sa[i - 1] + k]) ? r : ++r;
+
+            for (int i = 0; i < n; i++)
+                ra[i] = temp_ra[i];
+
+            if (ra[sa[n - 1]] == n - 1)
+                break;
+        }
+    }
+
+    pii matching(string p)
+    {
+        int l = 0;
+        int r = n - 1;
+        int p_size = p.size();
+
+        string comp;
+
+        while (l < r)
+        {
+            int m = (l + r) / 2;
+
+            comp = s_value.substr(sa[m], min(n - sa[m], p_size));
+
+            if (comp >= p)
+                r = m;
+            else
+                l = m + 1;
+        }
+
+        comp = s_value.substr(sa[l], min(n - sa[l], p_size));
+
+        if (comp != p)
+            return {-1, -1};
+
+        int ans_l = l;
+
+        l = 0;
+        r = n - 1;
+
+        while (l < r)
+        {
+            int m = (l + r) / 2;
+
+            comp = s_value.substr(sa[m], min(n - sa[m], p_size));
+
+            if (comp > p)
+                r = m;
+            else
+                l = m + 1;
+        }
+
+        comp = s_value.substr(sa[r], min(n - sa[r], p_size));
+
+        if (comp != p)
+            r--;
+
+        int ans_r = r;
+
+        return {ans_l, ans_r};
+    }
+
+    void build_lcp()
+    {
+        phi.assign(n, 0);
+        plcp.assign(n, 0);
+
+        phi[0] = -1;
+
+        for (int i = 1; i < n; i++)
+            phi[sa[i]] = sa[i - 1];
+
+        int l = 0;
+        int q = 0;
+        for (int i = 0; i < n; i++)
+        {
+            if (phi[i] == -1)
+            {
+                plcp[i] = 0;
+                continue;
+            }
+
+            while (s_value[i + l] == s_value[phi[i] + l])
+                l++;
+
+            plcp[i] = l;
+            q += l;
+            l = max(l - 1, (int)0);
+        }
+
+        v_cant_substr = n * (n - 1) / 2 - q;
+    }
+};
+
+\end{lstlisting}
+\end{multicols}
+Trie
+\begin{multicols}{2}
+\begin{lstlisting}[language=C++]
+class Trie
+{
+private:
+    int cant_string;
+    int cant_string_me;
+    int cant_node;
+    char value;
+    Trie *children[alphabet];
+
+public:
+    Trie(char a)
+    {
+        cant_string = 0;
+        cant_node = 1;
+        cant_string_me = 0;
+        value = a;
+
+        for (int i = 0; i < alphabet; i++)
+            children[i] = NULL;
+    }
+
+    pair<Trie *, int> search(string s)
+    {
+        Trie *node = this;
+        int i = 0;
+
+        while (i < s.size() && node->children[s[i] - first_char] != NULL)
+        {
+            node = node->children[s[i] - first_char];
+
+            i++;
+        }
+
+        return {node, i};
+    }
+
+    void insert(string s)
+    {
+        int q = s.size() - search(s).second;
+
+        Trie *node = this;
+
+        for (int i = 0; i < s.size(); i++)
+        {
+            node->cant_node += q;
+
+            if (node->children[s[i] - first_char] == NULL)
+            {
+                node->children[s[i] - first_char] = new Trie(s[i]);
+                q--;
+            }
+
+            node = node->children[s[i] - first_char];
+            node->cant_string_me++;
+        }
+
+        node->cant_string++;
+    }
+
+    void eliminate(string s)
+    {
+        if (!contains(s))
+            return;
+
+        Trie *node = this;
+        int q = 0;
+
+        for (int i = 0; i < s.size(); i++)
+        {
+            if (node->children[s[i] - first_char] == NULL)
+            {
+                node->children[s[i] - first_char] = new Trie(s[i]);
+            }
+
+            if (node->children[s[i] - first_char]->cant_string_me == 1)
+            {
+                node->children[s[i] - first_char] = NULL;
+
+                q = s.size() - i;
+                break;
+            }
+
+            node = node->children[s[i] - first_char];
+            node->cant_string_me--;
+
+            if (i == s.size() - 1)
+                node->cant_string--;
+        }
+
+        node = this;
+
+        for (int i = 0; i < s.size() - q + 1; i++)
+        {
+            node->cant_node -= q;
+            node = node->children[s[i] - first_char];
+        }
+    }
+
+    bool contains(string s)
+    {
+        auto q = search(s);
+        return q.second == s.size() && q.first->cant_string >= 1;
+    }
+
+    int cant_words_me() { return cant_string_me; }
+
+    int cant_words() { return cant_string; }
+
+    Trie *get(char a) { return children[a - first_char]; }
+
+    int size() { return cant_node; }
+};
+
+\end{lstlisting}
+\end{multicols}
+Kmp Pf
+\begin{multicols}{2}
+\begin{lstlisting}[language=C++]
+vi prefix_function(string p)
+{
+    vi pf(p.size());
+
+    pf[0] = 0;
+    int k = 0;
+
+    for (int i = 1; i < p.size(); i++)
+    {
+        while (k > 0 && p[k] != p[i])
+            k = pf[k - 1];
+
+        if (p[k] == p[i])
+            k++;
+
+        pf[i] = k;
+    }
+
+    return pf;
+}
+
+vi kmp(string t, string p)
+{
+    vi result;
+    vi pf = prefix_function(p);
+    int k = 0;
+
+    for (int i = 0; i < t.size(); i++)
+    {
+        while (k > 0 && p[k] != t[i])
+            k = pf[k - 1];
+
+        if (p[k] == t[i])
+            k++;
+
+        if (k == p.size())
+        {
+            result.push_back(i - (p.size() - 1));
+            k = pf[k - 1];
+        }
+    }
+
+    return result;
+}
 
 \end{lstlisting}
 \end{multicols}
