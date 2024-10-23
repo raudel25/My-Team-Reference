@@ -25,9 +25,10 @@
 #define f first
 #define s second
 
-#define for1(i, a, b) for (int i = ((int)a); i < ((int)b); i++)
-#define for2(i, a) for (int i = 0; i < ((int)a); i++)
-#define for3(i, a, b, c) for (int i = a; i < ((int)b); i += c)
+#define forl(i, a, b) for (int i = ((int)a); i < ((int)b); i++)
+#define forr(i, a, b) for (int i = a; i > ((int)b); i--)
+#define forl(i, a, b, c) for (int i = ((int)a); i < ((int)b); i += c)
+#define forr(i, a, b, c) for (int i = a; i > ((int)b); i -= c)
 #define foreach(i, a) for (auto &i : a)
 #define print(a)          \
     foreach (i, a)        \
